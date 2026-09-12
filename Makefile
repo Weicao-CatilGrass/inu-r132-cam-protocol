@@ -6,6 +6,7 @@
 # serve        start InuService and serve the camera protocol
 # display      show the camera in a window (cli, minifb)
 # yolo-train   label ./train/raw, train, publish into ./models/
+# train-label  hand-label train/raw in a window (no camera needed)
 # yolo-setup   create the Python environment for training and the detector
 # scan         print where the cubes are and how far, as JSON
 # shot         save timestamped JPEG photos under build/shot/
@@ -36,7 +37,7 @@ IS_WINDOWS := $(if $(findstring MINGW,$(UNAME_S)),1,$(if $(findstring MSYS,$(UNA
 
 .PHONY: setup setup-linux setup-windows check build build-linux build-win \
         serve display scan shot gui gui-build service service-status service-stop clean clean-deps \
-        yolo-train yolo-setup
+        yolo-train yolo-setup train-label
 
 SLN := inu-r132-cam-protocol.sln
 GUI_BIN := display/bin/Release/net8.0/inu-r132-display
@@ -196,6 +197,12 @@ shot:
 #   make yolo-train EPOCHS=2          # a quick smoke run, minutes not hours
 yolo-train:
 	@bash train/scripts/pipeline.sh
+
+# Hand-label train/raw: directories on the left, the photo on the right, paging
+# along the bottom and the training button top right. Every edit is saved beside
+# the photo straight away. Needs no InuService - it is offline work.
+train-label: gui-build
+	@$(GUI_BIN) --label
 
 # The Python environment both the training and the detector use.
 yolo-setup:

@@ -16,7 +16,15 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
-            ShowGate(desktop);
+            if (Program.LabelMode)
+            {
+                // Labelling is offline: no camera, so no InuService gate.
+                desktop.MainWindow = new LabelWindow();
+            }
+            else
+            {
+                ShowGate(desktop);
+            }
         }
 
         base.OnFrameworkInitializationCompleted();
